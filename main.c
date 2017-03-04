@@ -11,27 +11,40 @@ void listDevice(pcap_if_t *alldevsp);
 void connectDevice(pcap_if_t *alldevsp, int number);
 void print_Net_Mask(bpf_u_int32 net, bpf_u_int32 mask);
 
-//#pragma pack(push, 1)
-struct packet_test {
-	unsigned short ch;
-	unsigned short i;
-	unsigned short j;
-	unsigned short fgh;
-	//short j;
-}test;
-//#pragma pack(pop)
+#define ETHER_ADDR_LEN	6
+
+struct ethernet {
+ 	u_char ether_dhost[ETHER_ADDR_LEN]; /* Destination host address */
+ 	u_char ether_shost[ETHER_ADDR_LEN]; /* Source host address */
+ 	u_short ether_type; /* IP? ARP? RARP? etc */
+} __attribute__((packed));
 
 void my_callback(u_char *arg, const struct pcap_pkthdr* pkthdr, const u_char* packet) { 
-	int i = 0;
 	static int count = 0;
+	const struct ethernet *ether;
+	ether = (struct ethernet*)(packet);
+	printf("\nSIZE = %zu\n", sizeof(ether));
+	for (unsigned char j = 0; j < 7; j++) {
+        printf("%02X", ether->ether_dhost[j]);
+        if (j != 6)
+            printf(":");
+	}
+	printf("\n");
+	for (unsigned char j = 0; j < 7; j++) {
+        printf("%02X", ether->ether_shost[j]);
+        if (j != 6)
+            printf(":");
+	}
+	printf("\n->%X\n", ether->ether_dhost);
 	printf("Packet Count: %d\n", ++count);
 	printf("Recieved Packet Size: %d\n", pkthdr->len);
+	printf("Recieved Size caplen: %d\n", pkthdr->caplen);
 	printf("Payload:\n");
-	for (i = 0; i < pkthdr->len; i++) {
+	for (int i = 28; i < pkthdr->len; i++) {
 		if (isprint(packet[i]))
 			printf("%c ",packet[i]);
 		else
-			printf(" . ");
+			printf("%02X", packet[i]);
 		if ((i % 16 == 0 && i != 0) || i == pkthdr->len - 1)
 			printf("\n");
 	}
@@ -53,7 +66,6 @@ int main() {
 	}
 	connectDevice(alldevsp, number);
 	pcap_freealldevs(alldevsp);
-	printf("\nSIZE = %zu\n", sizeof(test));
 	return 0;
 }
 
