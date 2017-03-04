@@ -17,9 +17,13 @@ void my_callback(u_char *arg, const struct pcap_pkthdr* pkthdr, const u_char* pa
 	print_mac(ether->ether_dhost);
 	printf("Source: ");
 	print_mac(ether->ether_shost);
+	printf("Type: ");
+	for (int i = 0; i < 2; ++i)
+		printf("%02X", ether->ether_type[i]);
+	printf("\n");
 	printf("Packet Count: %d\n", ++count);
 	printf("Recieved Packet Size: %d\n", pkthdr->len);
-	printf("Payload:\n");
+	printf("Payload: ");
 	for (int i = 28; i < pkthdr->len; ++i) {
 		if (isprint(packet[i]))
 			printf("%c ",packet[i]);
@@ -28,6 +32,7 @@ void my_callback(u_char *arg, const struct pcap_pkthdr* pkthdr, const u_char* pa
 		if ((i % 16 == 0 && i != 0) || i == pkthdr->len - 1)
 			printf("\n");
 	}
+	printf("---------------------------------\n");
 }
 
 void connectDevice(pcap_if_t *alldevsp, int number) {

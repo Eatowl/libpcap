@@ -9,7 +9,7 @@
 #include "sniff_func.h"
 #include "sniff_head.h"
 
-void print_mac(u_char *mac) {
+void print_mac(const u_char* mac) {
 	for (int i = 0; i < 7; ++i) {
 		printf("%02X", mac[i]);
 		if (i != 6)
