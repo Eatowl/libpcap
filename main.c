@@ -25,15 +25,15 @@ void my_callback(u_char *arg, const struct pcap_pkthdr* pkthdr, const u_char* pa
 	ether = (struct ethernet*)(packet);
 	printf("\nSIZE = %zu\n", sizeof(ether));
 	for (unsigned char j = 0; j < 7; j++) {
-        printf("%02X", ether->ether_dhost[j]);
-        if (j != 6)
-            printf(":");
+		printf("%02X", ether->ether_dhost[j]);
+		if (j != 6)
+			printf(":");
 	}
 	printf("\n");
 	for (unsigned char j = 0; j < 7; j++) {
-        printf("%02X", ether->ether_shost[j]);
-        if (j != 6)
-            printf(":");
+		printf("%02X", ether->ether_shost[j]);
+		if (j != 6)
+			printf(":");
 	}
 	printf("\n->%X\n", ether->ether_dhost);
 	printf("Packet Count: %d\n", ++count);
