@@ -9,16 +9,16 @@
 #include "sniff_func.h"
 #include "sniff_head.h"
 
-void print_mac(const u_char* mac) {
-	for (int i = 0; i < 7; ++i) {
+void print_Ethernet_data(const u_char* mac, int max_i) {
+	for (int i = 0; i < max_i; ++i) {
 		printf("%02X", mac[i]);
-		if (i != 6)
+		if (i != 5 && max_i > 2)
 			printf(":");
 	}
 	printf("\n");
 }
 
-void listDevice(pcap_if_t *alldevsp) {
+void list_Device(pcap_if_t *alldevsp) {
 	pcap_if_t *device;
 	int i = 0;
 	printf("\nDEVICE LIST\n\n");
