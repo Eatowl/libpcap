@@ -37,7 +37,7 @@ void packet_processing(u_char *arg, const struct pcap_pkthdr* pkthdr, const u_ch
 	printf("---------------------------------\n");
 }
 
-void connectDevice(pcap_if_t *alldevsp, int number) {
+void connectDevice(pcap_if_t *alldevsp, char *name) {
 	pcap_if_t *device;
 	pcap_t *handle;
 	bpf_u_int32 net, mask;
@@ -45,9 +45,10 @@ void connectDevice(pcap_if_t *alldevsp, int number) {
 	int count = 0;
 	device = alldevsp;
 	while (device != NULL) {
-		if (number == count) {
+		if (strcmp(name, device->name) == 0) {
 			pcap_lookupnet(device->name, &net, &mask, errbuf);
 			print_Net_Mask(net, mask);
+			free(name);
 			if ((handle = pcap_open_live(device->name, 65536, 1, 0, errbuf)) == NULL) {
 				perror("pcap_open_live error");
 				exit(1);
@@ -59,6 +60,7 @@ void connectDevice(pcap_if_t *alldevsp, int number) {
 		device = device->next;
 		++count;
 	}
+	free(name);
 }
 
 int main() {
@@ -69,13 +71,13 @@ int main() {
 		exit(1);
 	}
 	list_Device(alldevsp);
-	int number;
-	printf("\nInput number device: ");
-	if ((scanf("%d", &number)) == -1) {
+	char *name;
+	printf("\nInput name device: ");
+	if (scanf("%m[a-z,A-Z,0-9]", &name) == -1) {
 		perror("scanf error");
 		exit(1);
 	}
-	connectDevice(alldevsp, number);
+	connectDevice(alldevsp, name);
 	pcap_freealldevs(alldevsp);
 	return 0;
 }
