@@ -9,6 +9,15 @@
 #include "sniff_func.h"
 #include "sniff_head.h"
 
+unsigned short csum(unsigned short *buf, int nwords) {
+	unsigned long sum;
+	for (sum = 0; nwords > 0; nwords--)
+		sum += *buf++;
+		sum = (sum >> 16) + (sum & 0xffff);
+		sum += (sum >> 16);
+	return (unsigned short)(~sum);
+}
+
 void print_Ethernet_data(const u_char* mac, int max_i) {
 	for (int i = 0; i < max_i; ++i) {
 		printf("%02X", mac[i]);

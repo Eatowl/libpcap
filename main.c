@@ -23,7 +23,12 @@ void packet_processing(u_char *arg, const struct pcap_pkthdr* pkthdr, const u_ch
 	printf("Packet Count: %d\n", ++count);
 	printf("Recieved Packet Size: %d\n", pkthdr->len);
 	const struct ethernetHeader *ether;
+	const struct IPHeader *iphead;
 	ether = (struct ethernetHeader*)(packet);
+	iphead = (struct IPHeader*)(packet + sizeof(struct ethernetHeader));
+	printf("TTL %d\n", iphead->iph_ttl);
+	printf("Protocol %02X\n", iphead->iph_protocol);
+	printf("CRC %d\n", iphead->iph_chksum);
 	print_base_packet_info(ether);
 	printf("Payload: ");
 	for (int i = 28; i < pkthdr->len; ++i) {

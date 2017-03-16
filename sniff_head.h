@@ -11,17 +11,25 @@ struct ethernetHeader {
 } __attribute__((packed));
 
 struct IPHeader {
-	u_char  version;
-	u_char  len;
-	u_char  tos;
-	u_short length; 
-	u_short id;
-	u_short offset;
-	u_char  ttl;
-	u_char  protocol;
-	u_short xsum;
-	unsigned long  src;
-	unsigned long  dest;
+	u_char             iph_ihl:4;
+	u_char             iph_ver:4;
+	u_char             iph_tos;
+	unsigned short int iph_len;
+	unsigned short int iph_ident;
+	unsigned short int iph_offset;
+	u_char             iph_ttl;
+	u_char             iph_protocol;
+	unsigned short int iph_chksum;
+	u_int              iph_sourceip;
+	u_int              iph_destip;
 } __attribute__((packed));
+
+
+struct UDPHeader {
+	unsigned short int udph_srcport;
+	unsigned short int udph_destport;
+	unsigned short int udph_len;
+	unsigned short int udph_chksum;
+}__attribute__((packed));
 
 #endif
